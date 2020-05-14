@@ -1,0 +1,15 @@
+{
+  "name": "chatbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Sam Lanning <sam@samlanning.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/web-api": "^5.8.1",
+    "typescript": "^3.9.2"
+  },
+  "scripts": {
+    "clean": "rm -rf build",
+    "build": "yarn run clean && tsc --build src/tsconfig.json"
+  }
+}
