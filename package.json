@@ -6,10 +6,12 @@
   "license": "MIT",
   "dependencies": {
     "@slack/web-api": "^5.8.1",
+    "dotenv": "^8.2.0",
     "typescript": "^3.9.2"
   },
   "scripts": {
     "clean": "rm -rf build",
-    "build": "yarn run clean && tsc --build src/tsconfig.json"
+    "build": "yarn run clean && tsc --build src/tsconfig.json",
+    "start": "node build"
   }
 }
