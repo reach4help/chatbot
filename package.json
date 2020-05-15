@@ -23,6 +23,6 @@
     "gcp-deploy-resource": "kubectl apply -f deployment.yaml",
     "gcp-deploy-service": "kubectl apply -f service.yaml",
     "gcp-upload-secrets": "kubectl create secret generic chatbot --from-env-file ./.env.secrets --dry-run -o yaml | kubectl apply -f -",
-    "deploy": "yarn run gcp-upload && gcp-deploy-resource && gcp-deploy-service"
+    "deploy": "yarn run gcp-upload && yarn run gcp-deploy-resource && yarn run gcp-deploy-service"
   }
 }
