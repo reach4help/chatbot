@@ -283,7 +283,7 @@ export class App {
       const events = await calendar.events.list({
         calendarId: pair.calendar,
         timeMin: (new Date()).toISOString(),
-        maxResults: 10,
+        maxResults: 20,
         singleEvents: true,
         orderBy: 'startTime',
       });
