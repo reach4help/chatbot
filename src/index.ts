@@ -26,11 +26,39 @@ if (!SITE_ROOT) {
 
 const CONFIG: AppConfig = {
   adminChannel: 'bot-admin',
-  atHereChannels: ['bot-admin'],
+  atHereChannels: ['leadership', 'team-back-end', 'team-design-ui-ux', 'team-front-end', 'team-map', 'team-marketing', 'team-outreach-pr', 'bot-admin'],
   pairs: [
     {
-      channel: 'bot-admin',
+      channel: 'leadership',
       calendar: 'reach4help.org_ba7n184n686bs9vkpjtqakhdl0@group.calendar.google.com'
+    },
+    {
+      channel: 'team-back-end',
+      calendar: 'reach4help.org_r4l70btvo2q55foaurpc7jauuk@group.calendar.google.com'
+    },
+    {
+      channel: 'team-design-ui-ux',
+      calendar: 'reach4help.org_rpetmmuro88skq5trit5tu6u60@group.calendar.google.com'
+    },
+    {
+      channel: 'team-front-end',
+      calendar: 'reach4help.org_0gusnqc542bvr31tarou3l5pck@group.calendar.google.com'
+    },
+    {
+      channel: 'team-map',
+      calendar: 'reach4help.org_8mbgkl6ck52h5po2fehcadg0ek@group.calendar.google.com'
+    },
+    {
+      channel: 'team-marketing',
+      calendar: 'reach4help.org_hgvotgcvlah0bgu9rj1si5kkoc@group.calendar.google.com'
+    },
+    {
+      channel: 'team-outreach-pr',
+      calendar: 'reach4help.org_badtfkfu8ahgnie6ppfg9efca8@group.calendar.google.com'
+    },
+    {
+      channel: 'general',
+      calendar: 'reach4help.org_cgvkud6esrtvrmaqnc7p5ra2m0@group.calendar.google.com'
     }
   ],
   // Every 30 mins
