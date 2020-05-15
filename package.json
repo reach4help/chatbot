@@ -6,8 +6,11 @@
   "license": "MIT",
   "dependencies": {
     "@slack/web-api": "^5.8.1",
+    "@types/node-fetch": "^2.5.7",
     "dotenv": "^8.2.0",
+    "firebase": "^7.14.4",
     "googleapis": "^51.0.0",
+    "node-fetch": "^2.6.0",
     "typescript": "^3.9.2"
   },
   "scripts": {
