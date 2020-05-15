@@ -78,7 +78,7 @@ interface ListsResult extends WebAPICallResult {
     const diff = time - now;
     const diffMins = Math.round(diff / 1000 / 60);
     let text = atHere ? '<!here> ' : '';
-    text += `The following ${events.length === 1 ? 'events are' : 'event is'} starting ${diffMins < 1 ? 'now' : `in ${diffMins} mins`}:\n`;
+    text += `The following ${events.length !== 1 ? 'events are' : 'event is'} starting ${diffMins < 1 ? 'now' : `in ${diffMins} mins`}:\n`;
     const blocks: SectionBlock[] = [{
       type: 'section',
       text: {
