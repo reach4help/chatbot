@@ -1,11 +1,11 @@
 import * as express from 'express';
 import { google } from 'googleapis';
+import { OAuth2Client, Credentials } from 'google-auth-library';
 import { WebClient as SlackWebClient, SectionBlock } from '@slack/web-api';
 import { calendar_v3 } from 'googleapis/build/src/apis/calendar/v3';
 
-import { authorize as authorizeWithGoogle } from './google-auth';
-
 import * as slack from './slack';
+import { setConfig, getConfig } from './config';
 
 type Event = calendar_v3.Schema$Event;
 
@@ -27,13 +27,35 @@ export interface AppConfig {
    */
   interval: number;
   port: number;
+  google: {
+    clientId: string,
+    clientSecret: string,
+  };
+  siteRoot: string;
 }
+
+interface ActiveAuthRequest {
+  requestKey: string;
+  authUrl: string;
+  /**
+   * Attempt to accept the given code, and if valid, return true
+   */
+  acceptCode: (code: string) => Promise<boolean>;
+  promise: Promise<Credentials>;
+}
+
+const CALLBACK_PATH = '/callback';
+
+const GOOGLE_SCOPES = [
+  'https://www.googleapis.com/auth/calendar.readonly'
+];
 
 export class App {
 
   private readonly config: AppConfig;
   private readonly webApp: express.Express;
   private readonly slack: SlackWebClient;
+  private googleAuth: OAuth2Client;
 
   /**
    * Mapping from channel name to ID
@@ -44,6 +66,8 @@ export class App {
    * Timeouts that are currently queued for posting notifications
    */
   private readonly notificationTimeouts = new Set<NodeJS.Timeout>();
+
+  private activeAuthRequest: ActiveAuthRequest | null = null;
 
   public constructor(config: AppConfig) {
 
@@ -60,10 +84,39 @@ export class App {
     this.webApp = express();
 
     this.slack = new SlackWebClient(SLACK_TOKEN);
+
+    const redirectURI = new URL(config.siteRoot);
+    redirectURI.pathname = CALLBACK_PATH;
+
+    this.googleAuth = new google.auth.OAuth2(
+      config.google.clientId,
+      config.google.clientSecret,
+      redirectURI.href
+    );
   }
 
   private initializeWebapp() {
-
+    this.webApp.get(CALLBACK_PATH, async (req, res) => {
+      if (!this.activeAuthRequest) {
+        res.status(403).send('No active auth request');
+        return;
+      }
+      if (req.query.state !== this.activeAuthRequest.requestKey) {
+        res.status(403).send('Invalid state parameter');
+        return;
+      }
+      if (typeof req.query.code !== 'string') {
+        res.status(403).send('Invalid code parameter');
+        return;
+      }
+      const valid = await this.activeAuthRequest.acceptCode(req.query.code);
+      if (valid) {
+        this.activeAuthRequest = null;
+        res.status(200).send('Successfully Authenticated');
+      } else {
+        res.status(403).send(`Invalid code, please try again: ${this.activeAuthRequest.authUrl}`);
+      }
+    });
   }
 
   private async getSlackChannels() {
@@ -135,6 +188,75 @@ export class App {
   }
 
   /**
+   * Call this when we need to get a new google token.
+   */
+  private getNewGoogleToken = async (): Promise<Credentials> => {
+    if (!this.activeAuthRequest) {
+      const url = new URL(this.config.siteRoot);
+      url.pathname = CALLBACK_PATH;
+      /**
+       * Random string assigned to this auth request
+       */
+      const requestKey = Math.random().toString(36).substr(2);
+      const authUrl = this.googleAuth.generateAuthUrl({
+        access_type: 'offline',
+        scope: GOOGLE_SCOPES,
+        state: requestKey
+      });
+      let acceptCode: ((code: string) => Promise<boolean>) | null = null;
+      const promise = new Promise<Credentials>(resolve => {
+        acceptCode = code => {
+          console.log('Accepting new auth code')
+          return this.googleAuth.getToken(code)
+          .then(
+            resp => {
+              resolve(resp.tokens);
+              return true;
+            },
+            () => false
+          )
+        }
+      }).then(async token => {
+        await setConfig({ token });
+        return token;
+      });
+      if (!acceptCode) {
+        throw new Error('Unexpected Error');
+      }
+      this.activeAuthRequest = {
+        requestKey,
+        authUrl,
+        acceptCode,
+        promise
+      }
+    }
+    // Send a message about auth
+    this.sendStatusMessage([{
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text:
+          `<!here> I need someone to log in to google to authorize access to calendar, ` +
+          `please <${this.activeAuthRequest.authUrl}|Click here to authorize>.`
+      }
+    }]);
+    return this.activeAuthRequest.promise;
+  }
+
+  private async authorizeWithGoogleCalendar() {
+    if (Object.keys(this.googleAuth.credentials).length === 0) {
+      console.log('No credentials set yet, checking config');
+      let token = await (await getConfig()).token;
+      if (!token) {
+        console.log('No credentials in config, requesting new ones');
+        token = await this.getNewGoogleToken();
+      }
+      this.googleAuth.setCredentials(token);
+    }
+    return this.googleAuth;
+  }
+
+  /**
    * Get the latest up-coming events, and schedule timeouts to post about them
    * in the respective channels.
    */
@@ -201,12 +323,11 @@ export class App {
     }
   }
 
-  private authorizeWithGoogleCalendar() {
-    return authorizeWithGoogle();
-  }
-
   public async start() {
     this.initializeWebapp();
+
+    this.webApp.listen(this.config.port);
+    console.log(`Listening on port: ${this.config.port}`);
 
     await this.getSlackChannels();
 
@@ -220,8 +341,13 @@ export class App {
 
     await this.authorizeWithGoogleCalendar();
 
-    this.webApp.listen(this.config.port);
-    console.log(`Listening on port: ${this.config.port}`);
+    await this.sendStatusMessage([{
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: 'Successfully authorized with Google Calendar'
+      }
+    }]);
 
     this.handleUpcomingEvents();
 
