@@ -59,6 +59,10 @@ const CONFIG: AppConfig = {
     {
       channel: 'general',
       calendar: 'reach4help.org_cgvkud6esrtvrmaqnc7p5ra2m0@group.calendar.google.com'
+    },
+    {
+      channel: 'bot-admin',
+      calendar: 'reach4help.org_4c8mrtre1mtkt7do9fqf47lfmc@group.calendar.google.com'
     }
   ],
   // Every 30 mins
