@@ -120,7 +120,10 @@ export class App {
   }
 
   private async getSlackChannels() {
-    const lists = await this.slack.conversations.list() as slack.ListsResult;
+    const lists = await this.slack.conversations.list({
+      types: 'public_channel,private_channel',
+      limit: 1000
+    }) as slack.ListsResult;
 
     for (const c of lists.channels) {
       this.slackChannels.set(c.name, c.id);
