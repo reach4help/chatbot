@@ -19,7 +19,7 @@ spec:
         - containerPort: 8080
         env:
           - name: SITE_ROOT
-            value: "https://chatbot.reach4help.org"
+            value: "http://chatbot.reach4help.org"
           - name: PORT
             value: "8080"
           - name: FIREBASE_BOT_AUTH_ENDPOINT
