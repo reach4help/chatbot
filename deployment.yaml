@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reach4help-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatbot
+  template:
+    metadata:
+      labels:
+        app: chatbot
+    spec:
+      containers:
+      - name: reach4help-chatbot
+        image: gcr.io/reach4help/reach4help-chatbot:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: SITE_ROOT
+            value: "https://chatbot.reach4help.org"
+          - name: PORT
+            value: "8080"
+          - name: FIREBASE_BOT_AUTH_ENDPOINT
+            value: "https://us-central1-reach4help-dev.cloudfunctions.net/https-authenticateBot"
+          - name: FIREBASE_API_KEY
+            value: "AIzaSyDU5FZEGBwU9lv5RxSQ4ObPPaqhX_PBnYk"
+          - name: FIREBASE_AUTH_DOMAIN
+            value: "reach4help-dev.firebaseapp.com"
+          - name: FIREBASE_DATABASE_URL
+            value: "https://reach4help-dev.firebaseio.com"
+          - name: FIREBASE_PROJECT_ID
+            value: "reach4help-dev"
+          - name: FIREBASE_APP_ID
+            value: "1:664078449280:web:115f33485dfc48e35f4465"
+          - name: SLACK_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: chatbot
+                key: SLACK_TOKEN
+          - name: GOOGLE_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: chatbot
+                key: GOOGLE_CLIENT_SECRET
+          - name: GOOGLE_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: chatbot
+                key: GOOGLE_CLIENT_ID
+          - name: FIREBASE_BOT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: chatbot
+                key: FIREBASE_BOT_TOKEN

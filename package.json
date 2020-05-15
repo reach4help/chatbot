@@ -18,6 +18,11 @@
   "scripts": {
     "clean": "rm -rf build",
     "build": "yarn run clean && tsc --build src/tsconfig.json",
-    "start": "node build"
+    "start": "node build",
+    "gcp-upload": "gcloud builds submit --tag gcr.io/reach4help/reach4help-chatbot .",
+    "gcp-deploy-resource": "kubectl apply -f deployment.yaml",
+    "gcp-deploy-service": "kubectl apply -f service.yaml",
+    "gcp-upload-secrets": "kubectl create secret generic chatbot --from-env-file ./.env.secrets --dry-run -o yaml | kubectl apply -f -",
+    "deploy": "yarn run gcp-upload && gcp-deploy-resource && gcp-deploy-service"
   }
 }

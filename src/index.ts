@@ -2,6 +2,9 @@ import {config as initEnv} from 'dotenv';
 import { App, AppConfig } from './app';
 
 initEnv();
+initEnv({
+  path: '.env.secrets'
+});
 
 const {
   GOOGLE_CLIENT_SECRET,
