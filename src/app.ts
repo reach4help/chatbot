@@ -316,10 +316,10 @@ export class App {
         const timeout = time - now;
         const timeout_15 = time - now - 1000 * 60 * 15;
         const remind = () => this.notifyOfEvents(channel, time, Array.from(timeGroup.values()));
-        if (timeout > 0) {
+        if (timeout > 0 && timeout < 0x7FFFFFFF) {
           this.notificationTimeouts.add(setTimeout(remind, timeout));
         }
-        if (timeout_15 > 0) {
+        if (timeout_15 > 0 && timeout_15 < 0x7FFFFFFF) {
           this.notificationTimeouts.add(setTimeout(remind, timeout_15));
         }
       }
