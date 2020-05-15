@@ -1,18 +1,12 @@
-import * as fs from 'fs';
 import { google } from 'googleapis';
 import { OAuth2Client, Credentials } from 'google-auth-library';
-import * as path from 'path';
 import * as readline from 'readline';
-import { promisify } from 'util';
+
+import * as config from './config';
 
 const GOOGLE_SCOPES = [
   'https://www.googleapis.com/auth/calendar.readonly'
 ];
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-
-const TOKEN_FILE = path.join(path.dirname(__dirname), 'token.json');
 
 export const authorize = async () => {
   const client_secret = process.env.GOOGLE_CLIENT_SECRET;
@@ -20,12 +14,12 @@ export const authorize = async () => {
   const redirect_uri = "urn:ietf:wg:oauth:2.0:oob";
 
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uri);
-  const token = await readFile(TOKEN_FILE).catch(() => null);
+  const token = await (await config.getConfig()).token;
   let credentials: Credentials;
   if (!token) {
     credentials = await getAccessToken(oAuth2Client);
   } else {
-    credentials = JSON.parse(token.toString('utf8'));
+    credentials = token;
   }
   oAuth2Client.setCredentials(credentials);
   return oAuth2Client;
@@ -57,6 +51,8 @@ const getAccessToken = async (oAuth2Client: OAuth2Client): Promise<Credentials> 
     })
   );
   oAuth2Client.setCredentials(token);
-  await writeFile(TOKEN_FILE, JSON.stringify(token));
+  await config.setConfig({
+    token
+  });
   return token;
 }

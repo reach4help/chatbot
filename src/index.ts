@@ -4,7 +4,6 @@ import { google } from 'googleapis';
 import { calendar_v3 } from 'googleapis/build/src/apis/calendar/v3';
 
 import { authorize } from './google-auth';
-import * as config from './config';
 
 initEnv();
 
@@ -43,9 +42,6 @@ interface ListsResult extends WebAPICallResult {
 }
 
 (async () => {
-
-  // Get Config
-  await config.getConfig();
 
   // Authorize with google
   await authorize();

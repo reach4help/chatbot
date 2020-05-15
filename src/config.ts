@@ -1,5 +1,14 @@
 import * as firebase from 'firebase';
 import fetch from 'node-fetch';
+import { Credentials } from 'google-auth-library';
+
+import 'firebase/firestore';
+
+const CONFIG_DOC = 'config/chatbot';
+
+export interface Config {
+  token?: Credentials;
+}
 
 const initializeFirebase = () => {
 
@@ -62,9 +71,31 @@ const authenticate = async () => {
 export const getConfig = async () => {
   initializeFirebase();
 
-  if (firebase.auth().currentUser) {
+  if (!firebase.auth().currentUser) {
     await authenticate();
   }
 
-  throw new Error('not implemented');
+  const config: Config = await
+    firebase.firestore().doc(CONFIG_DOC).get()
+    .then(doc => doc.data() as Config || {});
+
+  return config;
+}
+
+export const setConfig = async (data: Partial<Config>) => {
+  initializeFirebase();
+
+  if (!firebase.auth().currentUser) {
+    await authenticate();
+  }
+
+  await firebase.firestore().runTransaction(async transaction => {
+    const ref = firebase.firestore().doc(CONFIG_DOC);
+    const doc = await transaction.get(ref);
+    if (doc.exists) {
+      await transaction.update(ref, data);
+    } else {
+      await transaction.set(ref, data);
+    }
+  })
 }
