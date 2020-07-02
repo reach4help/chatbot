@@ -32,3 +32,5 @@
    ```
    kubectl set image deployment reach4help-bot reach4help-chatbot=gcr.io/reach4help/reach4help-chatbot@sha256:<sha from deployment logs>
    ```
+1. Check that the bot successfully restarted and posted a message in the
+   `#bot-admin` slack channel.
