@@ -50,7 +50,7 @@ const CONFIG: AppConfig = {
     },
     {
       channel: 'team-marketing',
-      calendar: 'reach4help.org_hgvotgcvlah0bgu9rj1si5kkoc@group.calendar.google.com'
+      calendar: 'reach4help.org_badtfkfu8ahgnie6ppfg9efca8@group.calendar.google.com'
     },
     {
       channel: 'team-design',
