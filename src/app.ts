@@ -357,7 +357,24 @@ export class App {
       }
     }]);
 
-    this.handleUpcomingEvents();
+    const handleUpcomingEventsAndReportStatus = () =>
+      this.handleUpcomingEvents()
+      .then(() => this.sendStatusMessage([{
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: 'Successfully handled upcoming events'
+        }
+      }]))
+      .catch((err) => this.sendStatusMessage([{
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Unable to handle upcoming events:\n\`\`\`\n${err}\n\`\`\``
+        }
+      }]));
+
+    handleUpcomingEventsAndReportStatus();
 
     setInterval(this.handleUpcomingEvents, this.config.interval);
   }
