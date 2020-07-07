@@ -286,7 +286,12 @@ export class App {
         maxResults: 20,
         singleEvents: true,
         orderBy: 'startTime',
+      }).catch(err => {
+        console.error(`Error getting events for calendar ${pair.calendar}, ${err}`);
+        return null;
       });
+      if (!events)
+        continue;
       for (const event of events.data.items || []) {
         if (!event.id) {
           continue;
