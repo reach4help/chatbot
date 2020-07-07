@@ -28,9 +28,14 @@
    ```
    gcloud builds submit --tag gcr.io/reach4help/reach4help-chatbot
    ```
-1. Tell kubernetes to rollout the latest version of the image:
-   ```
-   kubectl set image deployment reach4help-bot reach4help-chatbot=gcr.io/reach4help/reach4help-chatbot@sha256:<sha from deployment logs>
-   ```
+1. Deploy the latest version of the image (can be done in the Google Cloud Shell)
+   1. Get the bot credentials
+      ```
+      gcloud container clusters get-credentials reach4help-bot --zone=us-central1-b
+      ```
+   2. Tell kubernetes to rollout the image to the bot
+      ```
+      kubectl set image deployment reach4help-bot reach4help-chatbot=gcr.io/reach4help/reach4help-chatbot@sha256:<sha from deployment logs>
+      ```
 1. Check that the bot successfully restarted and posted a message in the
    `#bot-admin` slack channel.
