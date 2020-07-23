@@ -25,7 +25,10 @@ spec:
           - name: FIREBASE_BOT_AUTH_ENDPOINT
             value: "https://us-central1-reach4help-dev.cloudfunctions.net/https-authenticateBot"
           - name: FIREBASE_API_KEY
-            value: "AIzaSyDU5FZEGBwU9lv5RxSQ4ObPPaqhX_PBnYk"
+            valueFrom:
+              secretKeyRef:
+                name: chatbot
+                key: FIREBASE_API_KEY
           - name: FIREBASE_AUTH_DOMAIN
             value: "reach4help-dev.firebaseapp.com"
           - name: FIREBASE_DATABASE_URL
