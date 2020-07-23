@@ -49,3 +49,16 @@ and you need to apply the changed config like so:
 ```
 kubectl apply -f deployment.yaml
 ```
+
+# Updating Secrets
+
+If you need to upload new secrets to kubernetes, create them in a file called
+`.env.secrets` (which is ignored by gitignore), check that the bot works locally,
+and then upload the secrets with the following command:
+
+```
+kubectl create secret generic chatbot --from-env-file ./.env.secrets --dry-run -o yaml | kubectl apply -f -
+```
+
+At which point redeploying the app should allow the new environment variables to
+take affect.
