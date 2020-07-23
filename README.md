@@ -39,3 +39,13 @@
       ```
 1. Check that the bot successfully restarted and posted a message in the
    `#bot-admin` slack channel.
+
+# Redeploying `deployment.yaml` config
+
+If you have to change `deployment.yaml` for any reason, such as moving an
+environment variable into a secret, then updating the image is not enough
+and you need to apply the changed config like so:
+
+```
+kubectl apply -f deployment.yaml
+```
