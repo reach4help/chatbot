@@ -347,7 +347,16 @@ export class App {
       }
     }]);
 
-    await this.authorizeWithGoogleCalendar();
+    await this.authorizeWithGoogleCalendar().catch(async err => {
+      await this.sendStatusMessage([{
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Failed to authorize with google calendar: ${err.message || err}`
+        }
+      }]);
+      throw err;
+    });
 
     await this.sendStatusMessage([{
       type: 'section',

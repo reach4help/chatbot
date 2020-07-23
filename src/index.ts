@@ -69,4 +69,8 @@ const CONFIG: AppConfig = {
 
 const app = new App(CONFIG);
 
-app.start();
+app.start().catch(err => {
+  console.log(err);
+  console.log('Failed to start chatbot');
+  process.exit(1);
+});
