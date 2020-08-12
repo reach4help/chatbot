@@ -26,7 +26,7 @@ if (!SITE_ROOT) {
 
 const CONFIG: AppConfig = {
   adminChannel: 'bot-admin',
-  atHereChannels: ['leadership', 'bot-admin'],
+  atHereChannels: ['leadership', 'bot-admin', 'team-development'],
   pairs: [
     {
       channel: 'bot-admin',
