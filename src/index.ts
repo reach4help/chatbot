@@ -45,10 +45,6 @@ const CONFIG: AppConfig = {
       calendar: 'reach4help.org_0gusnqc542bvr31tarou3l5pck@group.calendar.google.com'
     },
     {
-      channel: 'team-development',
-      calendar: 'reach4help.org_0gusnqc542bvr31tarou3l5pck@group.calendar.google.com'
-    },
-    {
       channel: 'team-product',
       calendar: 'c_r41587fe500hb4cbc8m2jmf34s@group.calendar.google.com'
     },
@@ -56,10 +52,10 @@ const CONFIG: AppConfig = {
     //   channel: 'team-map',
     //   calendar: 'reach4help.org_0gusnqc542bvr31tarou3l5pck@group.calendar.google.com'
     // },
-    {
-      channel: 'team-marketing',
-      calendar: 'reach4help.org_badtfkfu8ahgnie6ppfg9efca8@group.calendar.google.com'
-    },
+    // {
+    //   channel: 'team-marketing',
+    //   calendar: 'reach4help.org_badtfkfu8ahgnie6ppfg9efca8@group.calendar.google.com'
+    // },
     {
       channel: 'team-design',
       calendar: 'reach4help.org_rpetmmuro88skq5trit5tu6u60@group.calendar.google.com'
