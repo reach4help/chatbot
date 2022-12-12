@@ -9,7 +9,7 @@
     "@types/express": "^4.17.6",
     "@types/node-fetch": "^2.5.7",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "firebase": "^7.14.4",
     "googleapis": "^51.0.0",
     "node-fetch": "^2.6.1",
